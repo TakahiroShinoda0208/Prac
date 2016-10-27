@@ -1,0 +1,48 @@
+set term postscript color fontscale 0.5 enhanced size 24cm,18cm
+set output 'Stock_number.eps'
+
+set lmargin 0
+set rmargin 0
+set tmargin 0
+set bmargin 0
+
+set bars 3.0
+set boxwidth 1
+unset key
+
+set title "TITLE" font 'Helvetica,30'
+set multiplot layout 2,1
+set ytics nomirror
+set y2tics
+set xdata time
+set style fill empty
+set timefmt "%Y-%m-%d"
+
+set yr[MIN:MAX]
+set y2r[0:Volume]
+
+
+plot 'Stock_number.tsv' using 1:6 with boxes lc rgb "web-blue" axes x1y2,\
+'Stock_number.tsv' using 1:2:4:3:7 with candlesticks lc rgb "web-green",\
+'Stock_number.plus.tsv' using 6:8 with points pt 7 ps 0.8 lc rgb "orange",\
+'Stock_number.minus.tsv' using 6:8 with points pt 7 ps 0.8 lc rgb "dark-cyan",\
+'Stock_number.plus.tsv' using 2:4 with points pt 7 ps 0.8 lc rgb "red",\
+'Stock_number.minus.tsv' using 2:4 with points pt 7 ps 0.8 lc rgb "blue"
+
+
+unset title
+
+set yr[-0.5:0.5]
+set y2r[-0.5:0.5]
+
+plot 'Stock_number_NUM.tsv' using 1:2 with lines lw 0.3 lc rgb "steelblue",\
+'Stock_number.plus.tsv' using 6:7 with points pt 7 ps 0.8 lc rgb "orange",\
+'Stock_number.minus.tsv' using 6:7 with points pt 7 ps 0.8 lc rgb "dark-cyan",\
+'Stock_number.plus.tsv' using 2:3 with points pt 7 ps 0.8 lc rgb "red",\
+'Stock_number.minus.tsv' using 2:3 with points pt 7 ps 0.8 lc rgb "blue",\
+UPPER lc rgb "red",\
+LOWER lc rgb "red"
+
+unset multiplot
+set output
+set term x11

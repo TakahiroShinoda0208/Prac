@@ -1,0 +1,35 @@
+set bars 3.0
+
+unset key
+
+set style fill empty
+set multiplot layout 4,1
+set ytics nomirror
+set y2tics
+set xdata time
+set timefmt "%Y-%m-%d"
+
+set yr[MIN:MAX]
+set y2r[0:Volume]
+
+
+
+set datafile separator ","
+
+plot 'Stock_number.csv' using 1:6 with boxes lc rgb "web-blue" axes x1y2,\
+'Stock_number.csv' using 1:2:4:3:7 with candlesticks lc rgb "web-green"
+
+set yr[-0.2:0.2]
+set y2r[-0.2:0.2]
+set datafile separator "\t"
+plot 'Stock_number_3.tsv' using 1:2 with lines lw 0.3 lc rgb "steelblue",\
+0.1 lc rgb "red",\
+-0.1 lc rgb "red"
+
+plot 'Stock_number_7.tsv' using 1:2 with lines lw 0.3 lc rgb "steelblue",\
+0.1 lc rgb "red",\
+-0.1 lc rgb "red"
+
+plot 'Stock_number_60.tsv' using 1:2 with lines lw 0.3 lc rgb "steelblue",\
+0.1 lc rgb "red",\
+-0.1 lc rgb "red"
