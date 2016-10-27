@@ -1,0 +1,5 @@
+IN=$1
+fs=$2
+row=$3
+
+awk -v Fs=$fs -v ROW=$row 'BEGIN{FS=Fs;m=10000000}{if(m>$ROW)m=$ROW}END{if((m-500)>0)print m-500;else if((m-500)<=0)print 0}' $IN
