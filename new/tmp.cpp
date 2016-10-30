@@ -33,7 +33,7 @@ struct Struct
 };
 //関数プロトタイプ宣言
 vector<string> split(const string &str, char sep);
-void judge(ifstream &fin0,ifstream &fin1,double &x1,double &x2,double &x3,double &x4,int flagx,int cut);
+void judge(ifstream &fin0,ifstream &fin1,double &x1,double &x2,double &x3,double &x4,int flagx,int cut,int highprice);
 
 
 //main関数
@@ -46,8 +46,9 @@ int main(int argc,char*argv[])
       double x250=0; //安定区間min
       double x750=0; //安定区間max
       double x975=0; //信頼区間max
-      int cut=0;
-
+      int cut=0;//取引上限日数
+      int highprice=100000;//取引最大価格
+      
       for(int i=0;i<argc;i++){
 
             string ss=argv[i];
@@ -73,6 +74,11 @@ int main(int argc,char*argv[])
                   x750=atof(argv[i+3]);     
                   x975=atof(argv[i+4]);
             }
+            if(ss=="-hprice"){
+                  highprice=atof(argv[i+1]);
+                  
+            }
+            
             
       }
 
@@ -90,6 +96,9 @@ int main(int argc,char*argv[])
             cout << "-----------------------------------------------------------------------------------------" << endl;
             cout << "-f0"<<"\t\t"<<" : input tsv file format of stock data"<< endl;
             cout << "-f1"<<"\t\t"<<" : input tsv file format of diviation rate"<< endl;
+            cout << "-cut"<<"\t\t"<<" : the maximum limitation of date to deal"<<"\t"<<"[default none]"<< endl;
+            cout << "-open"<<"\t\t"<<" : judge by using opening price "<<"\t"<<"[default none(close)]"<< endl;
+            cout << "-hprice"<<"\t\t"<<" : the maximum price of dealing"<<"\t"<<"[default 100000]"<< endl;
             cout << "-x"<<"\t\t"<<" : the number of evaluation criteria "<< endl;
             cout <<"\t\t"<<"   in the above example, A and D is Confidence interval(lower and upper)"<< endl;
             cout <<"\t\t"<<"   in the above example, B and C is Stable interval(lower and upper)"<< endl;
@@ -100,7 +109,7 @@ int main(int argc,char*argv[])
       }
       
 
-      judge(fin0,fin1,x025,x250,x750,x975,flag,cut);      
+      judge(fin0,fin1,x025,x250,x750,x975,flag,cut,highprice);      
       return 0;
       
 }
@@ -118,7 +127,7 @@ vector<string> split(const string &str, char sep)
 }
 
 
-void judge(ifstream &fin0,ifstream &fin1,double &x1,double &x2,double &x3,double &x4,int flagx,int cut)
+void judge(ifstream &fin0,ifstream &fin1,double &x1,double &x2,double &x3,double &x4,int flagx,int cut,int highprice)
 {
       string line;
       double aa=0;
@@ -146,7 +155,11 @@ void judge(ifstream &fin0,ifstream &fin1,double &x1,double &x2,double &x3,double
       }
 
       while(getline(fin1,line)){
+
             tmp = split(line,'\t');
+
+            //opening priceかcloseing priceの判断
+
             switch(flagx){
             case 0: //closing priceで売買する場合
                   aa = stod(tmp[2]);
@@ -159,6 +172,8 @@ void judge(ifstream &fin0,ifstream &fin1,double &x1,double &x2,double &x3,double
             }
             z++;
 
+
+            //取引最大日数で取引打ち切り
             if(flag3==1){
                  if(z==cut){
                        if(box[0].way=="sell"){
@@ -169,18 +184,19 @@ void judge(ifstream &fin0,ifstream &fin1,double &x1,double &x2,double &x3,double
                   }
             }            
 
-//異常値を記録した次の日の始値で取引を行う。
+            //移動平均乖離率で外れ値を記録した日を入り日、正常値に戻った日を出日として売買を行う。
+            //highprice : 入り日の基準に株価が100円以下であるかを追加する。(30/10/2016)
 
             switch(flag){
             case 0:
-                  if(aa >= x4){
+                  if(aa >= x4 && mp[tmp[0]]<=highprice){
                         flag=1;
                         Struct a0("sell",tmp[0],aa,mp[tmp[0]],tmp[2]);
                         box.push_back(a0);
                         flag3=1;
                         z=0;
                   }
-                  if(aa <= x1){
+                  if(aa <= x1 && mp[tmp[0]]<=highprice){
                         flag=2;
                         Struct a0("buy",tmp[0],aa,mp[tmp[0]],tmp[2]);
                         box.push_back(a0);

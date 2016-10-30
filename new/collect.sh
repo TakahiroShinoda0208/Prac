@@ -9,37 +9,37 @@ awk_int=~/Documents/Stock/tools/awk_script/each_interest.awk
 #X=$1
 X=7
 
-#cat ./*.stats.tsv > stats.out
+cat ./*.stats.tsv > stats.out
 
 #全体の結果集計
 
-#awk -f $sep stats.out >> result.${X}.tsv
+awk -f $sep stats.out >> result.${X}.tsv
 
 #利回りの計算
 
-#$int >> interest.${X}.tsv
+$int >> interest.${X}.tsv
 
 #取引日にちごとの結果集計
 
-#cat ./*.result.tsv > tmp
-#$date -f tmp > date.tsv
+cat ./*.result.tsv > tmp
+$date -f tmp > date.tsv
 
 #各銘柄ごとに結果をまとめ出力
 
-#for f in ./*.stats.tsv
-#do
-#    F=`basename $f`
-#    printf ${F/.stats.tsv/}"\t"
-#    awk -f $score $f
-#done > score.tsv
+for f in ./*.stats.tsv
+do
+    F=`basename $f`
+    printf ${F/.stats.tsv/}"\t"
+    awk -f $score $f
+done > score.tsv
 
 
 #各銘柄ごとに年度別の利回りを計算しまとめる
 
-#for f in ./*.result.tsv
-#do
-#$each_int $f > ${f/result/interest}
-#done
+for f in ./*.result.tsv
+do
+$each_int $f > ${f/result/interest}
+done
 
 
 #すべての銘柄情報を一つのファイルに書き込む
