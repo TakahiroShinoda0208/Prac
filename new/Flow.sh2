@@ -70,7 +70,7 @@ mv tmp2 ${FILE}_${NUM}.tsv
 #$Judge -f0 $FILE.tsv -f1 ${FILE}_${NUM}.tsv -x $A $B $C $D > ${FILE}.close.result.tsv #お試し
 #$Judge -f0 $FILE.tsv -f1 ${FILE}_${NUM}.tsv -open -x $A $B $C $D > ${FILE}.open.result.tsv #お試し
 
-$Judge -f0 $FILE.tsv -f1 ${FILE}_${NUM}.tsv -cut 5 -hprice 100 -open -x $A $B $C $D > ${FILE}.result.tsv #お試し
+$Judge -f0 $FILE.tsv -f1 ${FILE}_${NUM}.tsv -cut 5 -open -x $A $B $C $D > ${FILE}.result.tsv #お試し
 
 
 
